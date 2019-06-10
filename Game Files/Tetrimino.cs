@@ -58,6 +58,8 @@ public class Tetrimino : MonoBehaviour
             else
             {
                 transform.position += Vector3.up;
+                enabled = false;
+                FindObjectOfType<Game>().spawnNextTetrimino();
             }
             fall = Time.time;
 
