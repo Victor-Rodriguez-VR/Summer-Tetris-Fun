@@ -27,9 +27,8 @@ public class Tetrimino : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             transform.position += Vector3.right;
-            if (isValidPosition())
-            {
-
+            if (isValidPosition()) {
+                FindObjectOfType<Game>().updateGrid(this);
             }
             else
             {
@@ -39,9 +38,8 @@ public class Tetrimino : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             transform.position += Vector3.left;
-            if (isValidPosition())
-            {
-
+            if (isValidPosition()) {
+                FindObjectOfType<Game>().updateGrid(this);
             }
             else
             {
@@ -51,12 +49,10 @@ public class Tetrimino : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed))
         {
             transform.position += Vector3.down;
-            if (isValidPosition())
-            {
-
+            if (isValidPosition()){
+                FindObjectOfType<Game>().updateGrid(this);
             }
-            else
-            {
+            else {
                 transform.position += Vector3.up;
                 enabled = false;
                 FindObjectOfType<Game>().spawnNextTetrimino();
@@ -64,8 +60,7 @@ public class Tetrimino : MonoBehaviour
             fall = Time.time;
 
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
             if (allowRotation) {
                 if (limitRotation) {
                     if (transform.rotation.eulerAngles.z >= 90)
@@ -83,7 +78,7 @@ public class Tetrimino : MonoBehaviour
             }
             
             if (isValidPosition()) {
-
+                FindObjectOfType<Game>().updateGrid(this);
             }
             else {
                 if (limitRotation) {
@@ -107,12 +102,13 @@ public class Tetrimino : MonoBehaviour
     bool isValidPosition() {
         foreach (Transform mino in transform)
         {
-            Vector2 pos = FindObjectOfType<Game>().Round(mino.position);
-            if (FindObjectOfType<Game>().inGrid(pos) == false)
-            {
+            Vector2 pos = FindObjectOfType<Game>().Round (mino.position);
+            if (FindObjectOfType<Game>().inGrid(pos) == false) {
                 return false;
             }
-
+            if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform) {
+                return false;
+            }
         }
         return true;
     }

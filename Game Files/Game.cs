@@ -6,6 +6,42 @@ public class Game : MonoBehaviour
 {   //classic tetris games always have width set to 10, and height set to 20.
     public static int gridWidth = 10;
     public static int gridHeight = 20;
+
+    public static Transform[,] grid = new Transform[gridWidth , gridHeight];
+
+
+
+    public Transform GetTransformAtGridPosition(Vector2 pos) {
+        if (pos.y > gridHeight - 1){
+            return null;
+        }
+        else {
+            return grid[(int)pos.x, (int)pos.y];
+        }
+    }
+
+
+
+    public void updateGrid(Tetrimino tetrimino) {
+        for (int y = 0; y < gridHeight; ++y) {
+            for (int x = 0; x < gridWidth; ++x) {
+                if (grid[x, y] != null) {
+                    if(grid[x,y].parent == tetrimino.transform ){
+                        grid[x, y] = null;
+                    }
+                      
+                }
+            }
+        }
+        foreach (Transform mino in tetrimino.transform) {
+            Vector2 pos = Round (mino.position);
+            if (pos.y < gridHeight) {
+                grid[(int)pos.x, (int)pos.y] = mino;
+            }
+        }
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,21 +53,40 @@ public class Game : MonoBehaviour
     {
         
     }
+
+    /// <summary>
+    /// Determins whether or not the 2d vector (which is tied to a tetrimino) is within bounds of the grid.
+    /// </summary>
+    /// <param name="pos"></param> -- the 2d vector we are checking is winthin bounds.
+    /// <returns></returns> -- return true if the 2d vector is within bounds of grid, elsewise 2d is out of bounds.
     public bool inGrid(Vector2 pos) {
         //confirms tetrimino is within bounds of the x-plane axis, and the y plane axis.
     return ((int)pos.x >=0 && (int)pos.x< gridWidth && (int)pos.y >= 0)    ;
     }
 
-    //Helper method, helps rounds :)
+
+
+
+    /// <summary>
+    /// Rounds every portion of a 2d vector.
+    /// </summary>
+    /// <param name="pos"></param>  -- the given 2d vector we want to round.
+    /// <returns></returns>  the same 2d vector pos, but rounded.
     public Vector2 Round(Vector2 pos) {
         return new Vector2(Mathf.Round(pos.x), Mathf.Round(pos.y));
     }
 
-    //Instantiates a prefab.
+    ///Instantiates a prefab within the game.
     public void spawnNextTetrimino() {
-        GameObject nextTetrimino =  (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f,20.0f),  Quaternion.identity);
+        GameObject nextTetrimino =  (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f,10.0f),  Quaternion.identity);
     }
 
+    /// <summary>
+    /// Generates a prefab directory.
+    /// </summary>
+    /// <returns>
+    /// Returns a string that contains the prefab directory of a random tetrimino.
+    /// </returns>
     string getRandomTetrimino() {
         int randomTetrimino = Random.Range(1, 8); // 1 to 7
         string randomTetriminoName = "Prefabs/Tetris_L";
