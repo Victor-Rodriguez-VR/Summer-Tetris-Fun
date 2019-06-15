@@ -54,6 +54,7 @@ public class Tetrimino : MonoBehaviour
             }
             else {
                 transform.position += Vector3.up;
+                FindObjectOfType<Game>().deleteRow();
                 enabled = false;
                 FindObjectOfType<Game>().spawnNextTetrimino();
             }

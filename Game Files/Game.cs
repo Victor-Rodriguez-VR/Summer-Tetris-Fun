@@ -20,7 +20,48 @@ public class Game : MonoBehaviour
         }
     }
 
+    public bool isFullAt(int y) {
+        for (int x = 0; x < gridWidth; ++x) {
+            if (grid[x, y] == null) {
+                return false;
+            }
 
+        }
+        return true;
+    }
+
+    public void deleteMinoAt(int y ) {
+        for (int x = 0; x < gridWidth; ++x) {
+            Destroy(grid[x, y].gameObject);
+            grid[x, y] = null;
+        }
+    }
+
+    public void moveRowDown(int y) {
+        for (int x = 0; x < gridWidth; ++x) {
+            if(grid[x,y] != null) {
+                grid[x, y - 1] = grid[x, y];
+                grid[x, y] = null;
+                grid[x, y - 1].position += Vector3.down;
+            }
+        }
+
+    }
+    public void moveAllRowsDown(int y) {
+        for (int i = y; i < gridHeight; ++i) {
+            moveRowDown(i);
+                }
+    }
+    public void deleteRow() {
+        for (int y = 0; y < gridHeight; ++y){
+            if (isFullAt(y)) {
+                deleteMinoAt(y);
+                moveAllRowsDown(y + 1);
+                --y;
+            }
+
+        }
+    }
 
     public void updateGrid(Tetrimino tetrimino) {
         for (int y = 0; y < gridHeight; ++y) {
@@ -48,11 +89,8 @@ public class Game : MonoBehaviour
         spawnNextTetrimino();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+ 
+   
 
     /// <summary>
     /// Determins whether or not the 2d vector (which is tied to a tetrimino) is within bounds of the grid.
