@@ -11,6 +11,18 @@ public class Game : MonoBehaviour
 
 
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        spawnNextTetrimino();
+    }
+
+    void update() {
+    }
+
+
+
+
     public Transform GetTransformAtGridPosition(Vector2 pos) {
         if (pos.y > gridHeight - 1){
             return null;
@@ -83,12 +95,7 @@ public class Game : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        spawnNextTetrimino();
-    }
-
+    
  
    
 
@@ -116,7 +123,8 @@ public class Game : MonoBehaviour
 
     ///Instantiates a prefab within the game.
     public void spawnNextTetrimino() {
-        GameObject nextTetrimino =  (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f,10.0f),  Quaternion.identity);
+     
+        GameObject nextTetrimino =  (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f,19.0f),  Quaternion.identity);
     }
 
     /// <summary>
@@ -127,7 +135,7 @@ public class Game : MonoBehaviour
     /// </returns>
     string getRandomTetrimino() {
         int randomTetrimino = Random.Range(1, 8); // 1 to 7
-        string randomTetriminoName = "Prefabs/Tetris_L";
+        string randomTetriminoName = "";
         switch (randomTetrimino) {
             case 1:
                 randomTetriminoName = "Prefabs/Tetris_L";

@@ -9,14 +9,12 @@ public class Tetrimino : MonoBehaviour
     public bool limitRotation = false;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         checkUserInput();
     }
 
@@ -24,8 +22,7 @@ public class Tetrimino : MonoBehaviour
     //Constantly gathers User Input. Acts upon arrow-key input.
     void checkUserInput() {
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
             transform.position += Vector3.right;
             if (isValidPosition()) {
                 FindObjectOfType<Game>().updateGrid(this);
@@ -41,26 +38,11 @@ public class Tetrimino : MonoBehaviour
             if (isValidPosition()) {
                 FindObjectOfType<Game>().updateGrid(this);
             }
-            else
-            {
+            else {
                 transform.position += Vector3.right;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed))
-        {
-            transform.position += Vector3.down;
-            if (isValidPosition()){
-                FindObjectOfType<Game>().updateGrid(this);
-            }
-            else {
-                transform.position += Vector3.up;
-                FindObjectOfType<Game>().deleteRow();
-                enabled = false;
-                FindObjectOfType<Game>().spawnNextTetrimino();
-            }
-            fall = Time.time;
-
-        }
+       
         else if (Input.GetKeyDown(KeyCode.UpArrow)) {
             if (allowRotation) {
                 if (limitRotation) {
@@ -87,8 +69,7 @@ public class Tetrimino : MonoBehaviour
                     {
                         transform.Rotate(0, 0, -90);
                     }
-                    else
-                    {
+                    else {
                         transform.Rotate(0, 0, 90);
                     }
                 }
@@ -97,6 +78,21 @@ public class Tetrimino : MonoBehaviour
                 }
 
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed))
+        {
+            transform.position += Vector3.down;
+            if (isValidPosition()) {
+                FindObjectOfType<Game>().updateGrid(this);
+            }
+            else {
+                enabled = false;
+                transform.position += Vector3.up;
+                FindObjectOfType<Game>().deleteRow();
+                FindObjectOfType<Game>().spawnNextTetrimino();
+            }
+            fall = Time.time;
+
         }
     }
 
