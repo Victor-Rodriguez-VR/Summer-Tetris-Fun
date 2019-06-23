@@ -9,22 +9,27 @@ public class Tetrimino : MonoBehaviour
     public bool limitRotation = false;
 
     // Start is called before the first frame update
-    void Start() {
+    void Start()
+    {
 
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         checkUserInput();
     }
 
 
     //Constantly gathers User Input. Acts upon arrow-key input.
-    void checkUserInput() {
+    void checkUserInput()
+    {
 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
             transform.position += Vector3.right;
-            if (isValidPosition()) {
+            if (isValidPosition())
+            {
                 FindObjectOfType<Game>().updateGrid(this);
             }
             else
@@ -35,45 +40,57 @@ public class Tetrimino : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             transform.position += Vector3.left;
-            if (isValidPosition()) {
+            if (isValidPosition())
+            {
                 FindObjectOfType<Game>().updateGrid(this);
             }
-            else {
+            else
+            {
                 transform.position += Vector3.right;
             }
         }
-       
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            if (allowRotation) {
-                if (limitRotation) {
+
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (allowRotation)
+            {
+                if (limitRotation)
+                {
                     if (transform.rotation.eulerAngles.z >= 90)
                     {
                         transform.Rotate(0, 0, -90);
                     }
 
-                else {
+                    else
+                    {
                         transform.Rotate(0, 0, 90);
                     }
                 }
-                else {
+                else
+                {
                     transform.Rotate(0, 0, 90);
                 }
             }
-            
-            if (isValidPosition()) {
+
+            if (isValidPosition())
+            {
                 FindObjectOfType<Game>().updateGrid(this);
             }
-            else {
-                if (limitRotation) {
+            else
+            {
+                if (limitRotation)
+                {
                     if (transform.rotation.eulerAngles.z >= 90)
                     {
                         transform.Rotate(0, 0, -90);
                     }
-                    else {
+                    else
+                    {
                         transform.Rotate(0, 0, 90);
                     }
                 }
-                else {
+                else
+                {
                     transform.Rotate(0, 0, -90);
                 }
 
@@ -82,13 +99,18 @@ public class Tetrimino : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed))
         {
             transform.position += Vector3.down;
-            if (isValidPosition()) {
+            if (isValidPosition())
+            {
                 FindObjectOfType<Game>().updateGrid(this);
             }
-            else {
-                enabled = false;
+            else
+            {
                 transform.position += Vector3.up;
                 FindObjectOfType<Game>().deleteRow();
+                if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
+                    FindObjectOfType<Game>().gameOver();
+                }
+                enabled = false;
                 FindObjectOfType<Game>().spawnNextTetrimino();
             }
             fall = Time.time;
@@ -96,14 +118,17 @@ public class Tetrimino : MonoBehaviour
         }
     }
 
-    bool isValidPosition() {
+    bool isValidPosition()
+    {
         foreach (Transform mino in transform)
         {
-            Vector2 pos = FindObjectOfType<Game>().Round (mino.position);
-            if (FindObjectOfType<Game>().inGrid(pos) == false) {
+            Vector2 pos = FindObjectOfType<Game>().Round(mino.position);
+            if (FindObjectOfType<Game>().inGrid(pos) == false)
+            {
                 return false;
             }
-            if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform) {
+            if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform)
+            {
                 return false;
             }
         }
