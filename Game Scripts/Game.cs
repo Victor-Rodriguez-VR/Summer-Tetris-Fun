@@ -1,24 +1,48 @@
 ﻿using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {   //classic tetris games always have width set to 10, and height set to 20.
     public static int gridWidth = 10;
     public static int gridHeight = 20;
-
     public static Transform[,] grid = new Transform[gridWidth, gridHeight];
+    public int[] scores = new int[] { 40, 100, 300, 1200};
+    public Text huddyHUD;
+    public int currentPoppedRows = 0;
+    public int currentScore = 0;
 
-
-
-    // Start is called before the first frame update
-    void Start() {
+    void Start()
+    {
         spawnNextTetrimino();
     }
+    
+    void Update() {
+        updateScore();
 
-    void update() {
+        updateUI();
     }
+    public void updateScore() {
+        
+        if (currentPoppedRows > 0) {
+
+            currentScore += scores[currentPoppedRows - 1];
+            
+        }
+        currentPoppedRows = 0;
+
+
+    }
+
+    public void updateUI() {
+        huddyHUD.text = currentScore.ToString();
+    }
+    // Start is called before the first frame update
+   
+
+    
 
     public bool checkIsAboveGrid(Tetrimino tetrimino) {
         for (int x = 0; x < gridWidth; ++x) {
@@ -52,14 +76,18 @@ public class Game : MonoBehaviour
 
     public bool isFullAt(int y)
     {
+        /// Param y is the current row of we iterate over for a transform.
         for (int x = 0; x < gridWidth; ++x)
         {
+            ///While in the row, if any index is false the whole row is automatically not full.
             if (grid[x, y] == null)
             {
                 return false;
             }
 
         }
+        /// Since we found a complete row, we incriment the number of rows popped.
+        currentPoppedRows ++;
         return true;
     }
 
