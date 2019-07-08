@@ -8,6 +8,9 @@ public class Tetrimino : MonoBehaviour
     public bool allowRotation = true;
     public bool limitRotation = false;
 
+    public int indivisualScore = 100; //Maximum points for immidiately putting a block down
+    public float indivisualScoreTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +21,7 @@ public class Tetrimino : MonoBehaviour
     void Update()
     {
         checkUserInput();
+        updateIndivisualScore();
     }
 
 
@@ -110,6 +114,7 @@ public class Tetrimino : MonoBehaviour
                 if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
                     FindObjectOfType<Game>().gameOver();
                 }
+                Game.currentScore += indivisualScore;
                 enabled = false;
                 FindObjectOfType<Game>().spawnNextTetrimino();
             }
@@ -133,5 +138,16 @@ public class Tetrimino : MonoBehaviour
             }
         }
         return true;
+    }
+
+    void updateIndivisualScore() {
+
+        if (indivisualScoreTime < 1) {
+            indivisualScoreTime += Time.deltaTime;
+        }
+        else {
+            indivisualScoreTime = 0;
+            indivisualScore = Mathf.Max(indivisualScore - 10, 0);
+        }
     }
 }

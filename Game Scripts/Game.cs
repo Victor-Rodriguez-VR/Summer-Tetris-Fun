@@ -12,7 +12,7 @@ public class Game : MonoBehaviour
     public int[] scores = new int[] { 40, 100, 300, 1200};
     public Text huddyHUD;
     public int currentPoppedRows = 0;
-    public int currentScore = 0;
+    public static int currentScore = 0;
 
     void Start()
     {
@@ -58,6 +58,7 @@ public class Game : MonoBehaviour
 
     public void gameOver() {
         SceneManager.LoadScene("GameOver");
+        
 
     }
 
