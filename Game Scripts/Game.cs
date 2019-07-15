@@ -35,15 +35,25 @@ public class Game : MonoBehaviour
 
 
     }
-
+    /// <summary>
+    /// Updates the score on the screen.
+    /// </summary>
     public void updateUI() {
         huddyHUD.text = currentScore.ToString();
     }
-    // Start is called before the first frame update
-   
 
-    
 
+
+
+    /// <summary>
+    /// Determins whether or not a tetrimino is within the game grid. 
+    /// </summary>
+    /// <param name="tetrimino">
+    /// The current tetrimino in use.
+    /// </param>  
+    /// <returns>
+    /// True - tetrimino is in the grid, otherwise false - the tetrimino is above the grid.
+    /// </returns>
     public bool checkIsAboveGrid(Tetrimino tetrimino) {
         for (int x = 0; x < gridWidth; ++x) {
             foreach (Transform mino in tetrimino.transform) {
@@ -56,25 +66,43 @@ public class Game : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Moves user to the game over screen.
+    /// </summary>
     public void gameOver() {
         SceneManager.LoadScene("GameOver");
         
 
     }
 
-
+    /// <summary>
+    /// Confirms the tetrimino is not above the grid
+    /// </summary>
+    /// <param name="pos">
+    /// The latest position of a tetrimino block.
+    /// </param>
+    /// <returns>
+    /// An updated grid with the blocks being accounted for, or null.
+    /// </returns>
     public Transform GetTransformAtGridPosition(Vector2 pos)
     {
-        if (pos.y > gridHeight - 1)
-        {
+        if (pos.y > gridHeight - 1) {
             return null;
         }
-        else
-        {
+        else {
             return grid[(int)pos.x, (int)pos.y];
         }
     }
 
+    /// <summary>
+    /// Confirms whether or not a row is full within the grid.
+    /// </summary>
+    /// <param name="y">
+    /// The y-axis value of the grid. 
+    /// </param>
+    /// <returns>
+    /// True - the row is full, otherwise false and the row is not full.
+    /// </returns>
     public bool isFullAt(int y)
     {
         /// Param y is the current row of we iterate over for a transform.
@@ -92,6 +120,13 @@ public class Game : MonoBehaviour
         return true;
     }
 
+
+    /// <summary>
+    /// Deletes a row of minos.
+    /// </summary>
+    /// <param name="y">
+    /// The row of minos you want to delete. 
+    /// </param>
     public void deleteMinoAt(int y)
     {
         for (int x = 0; x < gridWidth; ++x)
@@ -101,6 +136,14 @@ public class Game : MonoBehaviour
         }
     }
 
+
+
+    /// <summary>
+    /// Translates every non-null item within the row down by one on the y-axis.
+    /// </summary>
+    /// <param name="y">
+    /// The y-axis (row) of which you want to translate downward.
+    /// </param>
     public void moveRowDown(int y)
     {
         for (int x = 0; x < gridWidth; ++x)
@@ -114,19 +157,25 @@ public class Game : MonoBehaviour
         }
 
     }
-    public void moveAllRowsDown(int y)
-    {
-        for (int i = y; i < gridHeight; ++i)
-        {
+
+    /// <summary>
+    /// Translates every non-null item within the grid down by one.
+    /// </summary>
+    /// <param name="y">
+    /// The y-axis (row) of which you want to translate downward.
+    /// </param>
+    public void moveAllRowsDown(int y) {
+        for (int i = y; i < gridHeight; ++i) {
             moveRowDown(i);
         }
     }
-    public void deleteRow()
-    {
-        for (int y = 0; y < gridHeight; ++y)
-        {
-            if (isFullAt(y))
-            {
+
+    /// <summary>
+    /// Deletes every mino within a row, and translates every row down by one.
+    /// </summary>
+    public void deleteRow() {
+        for (int y = 0; y < gridHeight; ++y) {
+            if (isFullAt(y)) {
                 deleteMinoAt(y);
                 moveAllRowsDown(y + 1);
                 --y;
@@ -134,28 +183,25 @@ public class Game : MonoBehaviour
 
         }
     }
-
+    /// <summary>
+    /// Fills the grid in accordance with the tetrimino's position.
+    /// </summary>
+    /// <param name="tetrimino"></param>
     public void updateGrid(Tetrimino tetrimino)
     {
-        for (int y = 0; y < gridHeight; ++y)
-        {
-            for (int x = 0; x < gridWidth; ++x)
-            {
-                if (grid[x, y] != null)
-                {
-                    if (grid[x, y].parent == tetrimino.transform)
-                    {
+        for (int y = 0; y < gridHeight; ++y) {
+            for (int x = 0; x < gridWidth; ++x) {
+                if (grid[x, y] != null)  {
+                    if (grid[x, y].parent == tetrimino.transform) {
                         grid[x, y] = null;
                     }
 
                 }
             }
         }
-        foreach (Transform mino in tetrimino.transform)
-        {
+        foreach (Transform mino in tetrimino.transform) {
             Vector2 pos = Round(mino.position);
-            if (pos.y < gridHeight)
-            {
+            if (pos.y < gridHeight) {
                 grid[(int)pos.x, (int)pos.y] = mino;
             }
         }
@@ -167,7 +213,7 @@ public class Game : MonoBehaviour
 
 
     /// <summary>
-    /// Determins whether or not the 2d vector (which is tied to a tetrimino) is within bounds of the grid.
+    /// Determines whether or not the position of a tetrimino is within bounds of the grid.
     /// </summary>
     /// <param name="pos"></param> -- the 2d vector we are checking is winthin bounds.
     /// <returns></returns> -- return true if the 2d vector is within bounds of grid, elsewise 2d is out of bounds.
@@ -203,12 +249,10 @@ public class Game : MonoBehaviour
     /// <returns>
     /// Returns a string that contains the prefab directory of a random tetrimino.
     /// </returns>
-    string getRandomTetrimino()
-    {
+    string getRandomTetrimino() {
         int randomTetrimino = Random.Range(1, 8); // 1 to 7
         string randomTetriminoName = "";
-        switch (randomTetrimino)
-        {
+        switch (randomTetrimino) {
             case 1:
                 randomTetriminoName = "Prefabs/Tetris_L";
                 break;
