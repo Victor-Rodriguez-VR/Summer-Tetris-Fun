@@ -11,42 +11,54 @@ public class Tetrimino : MonoBehaviour
     public int indivisualScore = 100; //Maximum points for immidiately putting a block down
     public float indivisualScoreTime;
 
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    // Sound references
+    public AudioClip moveSound;    // Container that stores our clear line sound audio clip.
+    public AudioClip rotateSound;  // Container that stores our rotate sound audio clip.
+    public AudioClip landSound;    // Container that stores our landing sound audio clip.
+    private AudioSource audioSource; // The built-in method that allows us to play sounds.
+
+
+
+
+    //                                                          G a m e    F u n c t i o n a l i t y    P o r t o n.
+
+    // Start is called before the first frame update
+    void Start() {
+        // Creates the ability to play music whenever I'd like to.
+        audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        checkUserInput();
+    // Update is called once per frame.
+    void Update() {
+
+        checkUserInput(); // Constantly gathers User Input.
         updateIndivisualScore();
     }
 
 
-    //Constantly gathers User Input. Acts upon arrow-key input.
-    void checkUserInput()
-    {
+    //                                                                   M o v e m e n t    P o r t i o n.
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
+    void checkUserInput() {
+        // Acts upon arrow-key input.
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+
             transform.position += Vector3.right;
-            if (isValidPosition())
-            {
+            if (isValidPosition()) {
+
                 FindObjectOfType<Game>().updateGrid(this);
+                play_move_Audio();
             }
-            else
-            {
+            else {
+
                 transform.position += Vector3.left;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
+        else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             transform.position += Vector3.left;
-            if (isValidPosition())
-            {
+            if (isValidPosition()){
                 FindObjectOfType<Game>().updateGrid(this);
+                play_move_Audio();
             }
             else
             {
@@ -54,36 +66,38 @@ public class Tetrimino : MonoBehaviour
             }
         }
 
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (allowRotation)
-            {
-                if (limitRotation)
-                {
-                    if (transform.rotation.eulerAngles.z >= 90)
-                    {
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+
+            if (allowRotation) {
+
+                if (limitRotation) {
+
+                    if (transform.rotation.eulerAngles.z >= 90) {
+
                         transform.Rotate(0, 0, -90);
                     }
+                    else {
 
-                    else
-                    {
                         transform.Rotate(0, 0, 90);
                     }
                 }
-                else
-                {
+                else {
+
                     transform.Rotate(0, 0, 90);
                 }
             }
 
-            if (isValidPosition())
-            {
+            if (isValidPosition()) {
+
                 FindObjectOfType<Game>().updateGrid(this);
+                if (allowRotation) {
+                    play_rotate_Audio();
+                }
+                
             }
-            else
-            {
-                if (limitRotation)
-                {
+            else {
+                if (limitRotation) {
+
                     if (transform.rotation.eulerAngles.z >= 90)
                     {
                         transform.Rotate(0, 0, -90);
@@ -100,15 +114,19 @@ public class Tetrimino : MonoBehaviour
 
             }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed))
-        {
+        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)){
+
             transform.position += Vector3.down;
-            if (isValidPosition())
-            {
+            if (isValidPosition()){
+
+                if (Input.GetKeyDown(KeyCode.DownArrow)) {
+
+                    play_move_Audio();
+                }
                 FindObjectOfType<Game>().updateGrid(this);
-            }
-            else
-            {
+
+            } else {
+
                 transform.position += Vector3.up;
                 FindObjectOfType<Game>().deleteRow();
                 if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
@@ -117,14 +135,14 @@ public class Tetrimino : MonoBehaviour
                 Game.currentScore += indivisualScore;
                 enabled = false;
                 FindObjectOfType<Game>().spawnNextTetrimino();
+                play_land_Audio();
             }
             fall = Time.time;
 
         }
     }
 
-    bool isValidPosition()
-    {
+    bool isValidPosition() {
         foreach (Transform mino in transform)
         {
             Vector2 pos = FindObjectOfType<Game>().Round(mino.position);
@@ -150,4 +168,21 @@ public class Tetrimino : MonoBehaviour
             indivisualScore = Mathf.Max(indivisualScore - 10, 0);
         }
     }
+
+
+
+    //                                                                   S o u n d    P o r t i o n.
+
+    void play_move_Audio() {
+        audioSource.PlayOneShot(moveSound); // Plays the move sound audio clip.
+    }
+    void play_land_Audio() {
+        audioSource.PlayOneShot(landSound); // Plays the land sound audio clip.
+    }
+    void play_rotate_Audio() {
+        audioSource.PlayOneShot(rotateSound); // Plays the rotate sound audio clip.
+    }
 }
+
+
+

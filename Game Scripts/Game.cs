@@ -14,8 +14,12 @@ public class Game : MonoBehaviour
     public int currentPoppedRows = 0;
     public static int currentScore = 0;
 
+    private AudioSource audioSource; // Gives us the ability to play sounds from this script.
+    public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         spawnNextTetrimino();
     }
     
@@ -29,6 +33,7 @@ public class Game : MonoBehaviour
         if (currentPoppedRows > 0) {
 
             currentScore += scores[currentPoppedRows - 1];
+            play_LineCleared_Audio();
             
         }
         currentPoppedRows = 0;
@@ -276,5 +281,10 @@ public class Game : MonoBehaviour
                 break;
         }
         return randomTetriminoName;
+    }
+
+    //                                                             S o u n d     P o r t i o n.
+    void play_LineCleared_Audio() {
+        audioSource.PlayOneShot(clearLineSound); //// Plays the clear line sound audio clip.
     }
 }
