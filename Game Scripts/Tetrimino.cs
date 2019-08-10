@@ -3,13 +3,18 @@ using System.Collections;
 
 public class Tetrimino : MonoBehaviour
 {
+
+
+
+    //                                                                  G l o b a l    V a r i a b l e s.
+
     float fall = 0;
     public float fallSpeed = 1;
-    public bool allowRotation = true;
-    public bool limitRotation = false;
+    public bool allowRotation = true; // Public bool to let us determine whether our prefabs allow roation.
+    public bool limitRotation = false; // Public bool to let us determine if our prefabs are limited in rotation.
 
-    public int indivisualScore = 100; //Maximum points for immidiately putting a block down
-    public float indivisualScoreTime;
+    public int indivisualScore = 100; // Maximum points for immidiately putting a block down
+    public float indivisualScoreTime; // Score value for the current tetrimino. (Variable name pending)
 
 
     // Sound references
@@ -32,8 +37,8 @@ public class Tetrimino : MonoBehaviour
     // Update is called once per frame.
     void Update() {
 
-        checkUserInput(); // Constantly gathers User Input.
-        updateIndivisualScore();
+        checkUserInput(); // Checks input (arrow keys) and modifies a tetrimino's position.
+        updateIndivisualScore(); // After the 
     }
 
 
