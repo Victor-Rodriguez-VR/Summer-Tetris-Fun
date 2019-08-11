@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tetrimino : MonoBehaviour
-{
+public class Tetrimino : MonoBehaviour {
 
 
 
@@ -45,12 +44,22 @@ public class Tetrimino : MonoBehaviour
     //                                                                   M o v e m e n t    P o r t i o n.
 
     void checkUserInput() {
-        // Acts upon arrow-key input.
+        // Acts upon arrow-key input, being able to maniplulate the position / rotation of a tetrimino.
+        // Works with the arror keys 
+        // Left -- Moves the tetrimino to the left by one 'block'
+        // Right -- Moves the tetrimino to the right by one 'block'
+        // Up -- Rotates the tetrimino by 90 degrees to the right.
+        // Down - translates the tetrimino down by one row.
+
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
 
+            // Moves tetrimino to the right
             transform.position += Vector3.right;
+
+            // Confirms the tetrimino is not out of bounds or on another tetrimino.
             if (isValidPosition()) {
 
+                // Fills the grid in the correct mino location. Also plays a sound.
                 FindObjectOfType<Game>().updateGrid(this);
                 play_move_Audio();
             }
@@ -61,7 +70,7 @@ public class Tetrimino : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             transform.position += Vector3.left;
-            if (isValidPosition()){
+            if (isValidPosition()) {
                 FindObjectOfType<Game>().updateGrid(this);
                 play_move_Audio();
             }
@@ -96,6 +105,7 @@ public class Tetrimino : MonoBehaviour
 
                 FindObjectOfType<Game>().updateGrid(this);
                 if (allowRotation) {
+
                     play_rotate_Audio();
                 }
                 
@@ -103,26 +113,25 @@ public class Tetrimino : MonoBehaviour
             else {
                 if (limitRotation) {
 
-                    if (transform.rotation.eulerAngles.z >= 90)
-                    {
+                    if (transform.rotation.eulerAngles.z >= 90) {
+
                         transform.Rotate(0, 0, -90);
                     }
-                    else
-                    {
+                    else {
+
                         transform.Rotate(0, 0, 90);
                     }
                 }
-                else
-                {
+                else {
                     transform.Rotate(0, 0, -90);
                 }
 
             }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)){
+        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
 
             transform.position += Vector3.down;
-            if (isValidPosition()){
+            if (isValidPosition()) {
 
                 if (Input.GetKeyDown(KeyCode.DownArrow)) {
 
@@ -135,6 +144,7 @@ public class Tetrimino : MonoBehaviour
                 transform.position += Vector3.up;
                 FindObjectOfType<Game>().deleteRow();
                 if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
+
                     FindObjectOfType<Game>().gameOver();
                 }
                 Game.currentScore += indivisualScore;
@@ -148,15 +158,13 @@ public class Tetrimino : MonoBehaviour
     }
 
     bool isValidPosition() {
-        foreach (Transform mino in transform)
-        {
+        // Confirms the tetrimino is not on another mino or out of bounds.
+        foreach (Transform mino in transform) {
             Vector2 pos = FindObjectOfType<Game>().Round(mino.position);
-            if (FindObjectOfType<Game>().inGrid(pos) == false)
-            {
+            if (FindObjectOfType<Game>().inGrid(pos) == false)  {
                 return false;
             }
-            if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform)
-            {
+            if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform) {
                 return false;
             }
         }
