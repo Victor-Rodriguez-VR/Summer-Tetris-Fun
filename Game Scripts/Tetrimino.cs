@@ -8,12 +8,26 @@ public class Tetrimino : MonoBehaviour {
     //                                                                  G l o b a l    V a r i a b l e s.
 
     float fall = 0;
+
     public float fallSpeed = 1;
     public bool allowRotation = true; // Public bool to let us determine whether our prefabs allow roation.
     public bool limitRotation = false; // Public bool to let us determine if our prefabs are limited in rotation.
 
     public int indivisualScore = 100; // Maximum points for immidiately putting a block down
     public float indivisualScoreTime; // Score value for the current tetrimino. (Variable name pending)
+
+    private float constantHorizontalSpeed = 0.055f; // The translation speed of a tetrimino on the y-axis.
+    private float constantVerticalSpeed = 0.11f; // The translation speed of a tetrimino on the x-axis.
+    private float downwardWaitMax = 0.2f; // Wait time for the game to a button-holdown.
+
+
+    private float verticalTimer = 0;
+    private float horizontalTimer = 0;
+    private float downwardWaitTimer = 0;
+
+    private bool horizontalImmidiateMovement = false;
+    private bool verticalImmidiateMovement = false;
+
 
 
     // Sound references
@@ -51,7 +65,29 @@ public class Tetrimino : MonoBehaviour {
         // Up -- Rotates the tetrimino by 90 degrees to the right.
         // Down - translates the tetrimino down by one row.
 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+
+        if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.UpArrow)) {
+
+            horizontalTimer = 0;
+            verticalTimer = 0;
+            downwardWaitTimer = 0;
+        }
+        if (Input.GetKey(KeyCode.RightArrow)) {
+
+            if (downwardWaitTimer < downwardWaitMax) {
+                downwardWaitTimer += Time.deltaTime;
+                return;
+
+            }
+
+
+            if (horizontalTimer < constantHorizontalSpeed) { 
+
+                horizontalTimer += Time.deltaTime;
+                return; // Exits method
+            }
+
+            horizontalTimer = 0;
 
             // Moves tetrimino to the right
             transform.position += Vector3.right;
@@ -68,19 +104,36 @@ public class Tetrimino : MonoBehaviour {
                 transform.position += Vector3.left;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+        else if (Input.GetKey(KeyCode.LeftArrow)) {
+
+            if (downwardWaitTimer < downwardWaitMax) {
+                downwardWaitTimer += Time.deltaTime;
+                return;
+
+            }
+
+            if (horizontalTimer < constantHorizontalSpeed) { 
+
+                horizontalTimer += Time.deltaTime;
+                return; // Exits method
+            }
+            horizontalTimer = 0;
+
             transform.position += Vector3.left;
             if (isValidPosition()) {
+
                 FindObjectOfType<Game>().updateGrid(this);
                 play_move_Audio();
             }
-            else
-            {
+
+            else {
                 transform.position += Vector3.right;
             }
         }
 
         else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+           
+
 
             if (allowRotation) {
 
@@ -128,12 +181,22 @@ public class Tetrimino : MonoBehaviour {
 
             }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
+        else if (Input.GetKey(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
+            if (downwardWaitTimer < downwardWaitMax) {
+                downwardWaitTimer += Time.deltaTime;
+                return;
 
+            }
+            if (verticalTimer < constantVerticalSpeed) {
+
+                verticalTimer += Time.deltaTime;
+                return;
+            }
+            verticalTimer = 0;
             transform.position += Vector3.down;
             if (isValidPosition()) {
 
-                if (Input.GetKeyDown(KeyCode.DownArrow)) {
+                if (Input.GetKey(KeyCode.DownArrow)) {
 
                     play_move_Audio();
                 }
