@@ -16,16 +16,16 @@ public class Tetrimino : MonoBehaviour {
     public int indivisualScore = 100; // Maximum points for immidiately putting a block down
     public float indivisualScoreTime; // Score value for the current tetrimino. (Variable name pending)
 
-    private float constantHorizontalSpeed = 0.055f; // The translation speed of a tetrimino on the y-axis.
-    private float constantVerticalSpeed = 0.11f; // The translation speed of a tetrimino on the x-axis.
-    private float downwardWaitMax = 0.2f; // Wait time for the game to a button-holdown.
+    private float constantHorizontalSpeed = 0.06f; // The translation speed of a tetrimino on the y-axis.
+    private float constantVerticalSpeed = 0.1f; // The translation speed of a tetrimino on the x-axis.
+    private float downwardWaitMax = 0.02f; // Wait time for the game to a button-holdown.
 
 
-    private float verticalTimer = 0;
+    private float verticalTimer = 0; 
     private float horizontalTimer = 0;
     private float downwardWaitTimer = 0;
 
-    private bool horizontalImmidiateMovement = false;
+    private bool horizontalImmidiateMovement = false; // 
     private bool verticalImmidiateMovement = false;
 
 
@@ -67,6 +67,8 @@ public class Tetrimino : MonoBehaviour {
 
 
         if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.UpArrow)) {
+            horizontalImmidiateMovement = false;
+            verticalImmidiateMovement = false;
 
             horizontalTimer = 0;
             verticalTimer = 0;
@@ -74,18 +76,29 @@ public class Tetrimino : MonoBehaviour {
         }
         if (Input.GetKey(KeyCode.RightArrow)) {
 
-            if (downwardWaitTimer < downwardWaitMax) {
-                downwardWaitTimer += Time.deltaTime;
-                return;
+            if (horizontalImmidiateMovement) {
+
+                if (downwardWaitTimer < downwardWaitMax) {
+
+                    downwardWaitTimer += Time.deltaTime;
+                    return;
+
+                }
+
+
+                if (horizontalTimer < constantHorizontalSpeed) {
+
+                    horizontalTimer += Time.deltaTime;
+                    return; // Exits method
+                }
+            }
+            if (!horizontalImmidiateMovement) {
+                horizontalImmidiateMovement = true;
 
             }
 
-
-            if (horizontalTimer < constantHorizontalSpeed) { 
-
-                horizontalTimer += Time.deltaTime;
-                return; // Exits method
-            }
+   
+          
 
             horizontalTimer = 0;
 
@@ -106,17 +119,26 @@ public class Tetrimino : MonoBehaviour {
         }
         else if (Input.GetKey(KeyCode.LeftArrow)) {
 
-            if (downwardWaitTimer < downwardWaitMax) {
-                downwardWaitTimer += Time.deltaTime;
-                return;
+            if (horizontalImmidiateMovement) {
+
+                if (downwardWaitTimer < downwardWaitMax) {
+                    downwardWaitTimer += Time.deltaTime;
+                    return;
+
+                }
+
+                if (horizontalTimer < constantHorizontalSpeed) {
+
+                    horizontalTimer += Time.deltaTime;
+                    return; // Exits method
+                }
+            }
+            if (!horizontalImmidiateMovement) {
+
+                horizontalImmidiateMovement = true;
 
             }
-
-            if (horizontalTimer < constantHorizontalSpeed) { 
-
-                horizontalTimer += Time.deltaTime;
-                return; // Exits method
-            }
+           
             horizontalTimer = 0;
 
             transform.position += Vector3.left;
@@ -182,16 +204,25 @@ public class Tetrimino : MonoBehaviour {
             }
         }
         else if (Input.GetKey(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
-            if (downwardWaitTimer < downwardWaitMax) {
-                downwardWaitTimer += Time.deltaTime;
-                return;
 
-            }
-            if (verticalTimer < constantVerticalSpeed) {
 
-                verticalTimer += Time.deltaTime;
-                return;
+            if (verticalImmidiateMovement) {
+
+                if (downwardWaitTimer < downwardWaitMax) {
+
+                    downwardWaitTimer += Time.deltaTime;
+                    return;
+                }
+                if (verticalTimer < constantVerticalSpeed) {
+
+                    verticalTimer += Time.deltaTime;
+                    return;
+                }
             }
+            if (!verticalImmidiateMovement) {
+                verticalImmidiateMovement = true;
+            }
+           
             verticalTimer = 0;
             transform.position += Vector3.down;
             if (isValidPosition()) {
