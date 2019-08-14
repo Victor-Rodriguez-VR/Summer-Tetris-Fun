@@ -17,6 +17,12 @@ public class Game : MonoBehaviour
     private AudioSource audioSource; // Gives us the ability to play sounds from this script.
     public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
 
+
+    private GameObject previewTetrimino;
+    private GameObject nextTetrimino;
+
+    private bool gameStarted = false;
+    private Vector2 previewPosition = new Vector2(-5.5f, 15.0f);
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -244,8 +250,24 @@ public class Game : MonoBehaviour
     ///Instantiates a prefab within the game.
     public void spawnNextTetrimino()
     {
+        if (!gameStarted) {
 
-        GameObject nextTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f, 19.0f), Quaternion.identity);
+            gameStarted = true;
+            nextTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f, 19.0f), Quaternion.identity);
+            previewTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), previewPosition, Quaternion.identity);
+            previewTetrimino.GetComponent<Tetrimino>().enabled = false;
+
+        }
+        else {
+            previewTetrimino.transform.localPosition = new Vector2(5.0f, 20.0f);
+            nextTetrimino = previewTetrimino;
+            nextTetrimino.GetComponent<Tetrimino>().enabled = true;
+            previewTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), previewPosition, Quaternion.identity);
+            previewTetrimino.GetComponent<Tetrimino>().enabled = false;
+
+
+        }
+        
     }
 
     /// <summary>
