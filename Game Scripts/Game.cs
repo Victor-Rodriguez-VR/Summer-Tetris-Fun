@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine;
 
 public class Game : MonoBehaviour
-{   //classic tetris games always have width set to 10, and height set to 20.
+{   // classic tetris games always have width set to 10, and height set to 20.
     public static int gridWidth = 10;
     public static int gridHeight = 20;
     public static Transform[,] grid = new Transform[gridWidth, gridHeight];
@@ -18,13 +18,12 @@ public class Game : MonoBehaviour
     public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
 
 
-    private GameObject previewTetrimino;
-    private GameObject nextTetrimino;
+    private GameObject previewTetrimino; // Is the upcoming tetrimino block once the player lands the nextTetrimino object (which is the tetrimino they control)
+    private GameObject nextTetrimino;   // The tetrimino the user controlls.
 
-    private bool gameStarted = false;
-    private Vector2 previewPosition = new Vector2(-5.5f, 15.0f);
-    void Start()
-    {
+    private bool gameStarted = false; // Determines whether the game has started or not.
+    private Vector2 previewPosition = new Vector2(-5.5f, 15.0f); // The spawn location of the nextTetrimino
+    void Start() {
         audioSource = GetComponent<AudioSource>();
         spawnNextTetrimino();
     }
@@ -248,21 +247,28 @@ public class Game : MonoBehaviour
     }
 
     ///Instantiates a prefab within the game.
-    public void spawnNextTetrimino()
-    {
+    public void spawnNextTetrimino() {
+
         if (!gameStarted) {
-
+            // One-time use.
             gameStarted = true;
+            // Instantiates nextTetrimino (user controlled tetrimino)
             nextTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), new Vector2(5.0f, 19.0f), Quaternion.identity);
+            // Instantiates previewTetrimino (the tetrimino that appears on screen saying its next)
             previewTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), previewPosition, Quaternion.identity);
+            // Disables preview tetrimino so user movement does not affect the block's position.
             previewTetrimino.GetComponent<Tetrimino>().enabled = false;
-
         }
         else {
+            // Moves previewTetrimino to the spawning posiiton.
             previewTetrimino.transform.localPosition = new Vector2(5.0f, 20.0f);
+            // nextTetrimino becomes previewTetrimino
             nextTetrimino = previewTetrimino;
+            // Re-enabled user-movement.
             nextTetrimino.GetComponent<Tetrimino>().enabled = true;
+            // Generates a new instance of a tetrimino, and moves it to the previewPositon.
             previewTetrimino = (GameObject)Instantiate(Resources.Load(getRandomTetrimino(), typeof(GameObject)), previewPosition, Quaternion.identity);
+            // Disables movement for the newly created tetrimino. It is only for viewing purposes (till the new time spawnNextTetrimino is called)
             previewTetrimino.GetComponent<Tetrimino>().enabled = false;
 
 
