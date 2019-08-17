@@ -13,6 +13,7 @@ public class Game : MonoBehaviour
     public Text huddyHUD;
     public int currentPoppedRows = 0;
     public static int currentScore = 0;
+    public float fallSpeed = 1.0f;
 
     private AudioSource audioSource; // Gives us the ability to play sounds from this script.
     public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.

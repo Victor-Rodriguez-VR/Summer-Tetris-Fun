@@ -2,14 +2,11 @@
 using System.Collections;
 
 public class Tetrimino : MonoBehaviour {
-
-
-
     //                                                                  G l o b a l    V a r i a b l e s.
 
-    float fall = 0;
+    float fall = 0; // Timer for fallSpeed
 
-    public float fallSpeed = 1;
+    private float fallSpeed;
     public bool allowRotation = true; // Public bool to let us determine whether our prefabs allow roation.
     public bool limitRotation = false; // Public bool to let us determine if our prefabs are limited in rotation.
 
@@ -23,7 +20,8 @@ public class Tetrimino : MonoBehaviour {
 
     private float verticalTimer = 0; 
     private float horizontalTimer = 0;
-    private float downwardWaitTimer = 0;
+    private float downwardWaitTimerHorizontal= 0;
+    private float downwardWaitTimerVertical = 0;
 
     private bool horizontalImmidiateMovement = false; // 
     private bool verticalImmidiateMovement = false;
@@ -45,6 +43,8 @@ public class Tetrimino : MonoBehaviour {
     void Start() {
         // Creates the ability to play music whenever I'd like to.
         audioSource = GetComponent<AudioSource>();
+
+        fallSpeed = GameObject.Find("GameScript").GetComponent<Game>().fallSpeed;
     }
 
     // Update is called once per frame.
@@ -66,188 +66,31 @@ public class Tetrimino : MonoBehaviour {
         // Down - translates the tetrimino down by one row.
 
 
-        if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.UpArrow)) {
+        if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow)) {
             horizontalImmidiateMovement = false;
-            verticalImmidiateMovement = false;
-
             horizontalTimer = 0;
+            downwardWaitTimerHorizontal = 0;
+        }
+        if(Input.GetKeyUp(KeyCode.DownArrow)) {
+            verticalImmidiateMovement = false;
             verticalTimer = 0;
-            downwardWaitTimer = 0;
+            downwardWaitTimerVertical = 0;
         }
         if (Input.GetKey(KeyCode.RightArrow)) {
 
-            if (horizontalImmidiateMovement) {
-
-                if (downwardWaitTimer < downwardWaitMax) {
-
-                    downwardWaitTimer += Time.deltaTime;
-                    return;
-
-                }
-
-
-                if (horizontalTimer < constantHorizontalSpeed) {
-
-                    horizontalTimer += Time.deltaTime;
-                    return; // Exits method
-                }
-            }
-            if (!horizontalImmidiateMovement) {
-                horizontalImmidiateMovement = true;
-
-            }
-
-   
-          
-
-            horizontalTimer = 0;
-
-            // Moves tetrimino to the right
-            transform.position += Vector3.right;
-
-            // Confirms the tetrimino is not out of bounds or on another tetrimino.
-            if (isValidPosition()) {
-
-                // Fills the grid in the correct mino location. Also plays a sound.
-                FindObjectOfType<Game>().updateGrid(this);
-                play_move_Audio();
-            }
-            else {
-
-                transform.position += Vector3.left;
-            }
+            moveRight();
         }
-        else if (Input.GetKey(KeyCode.LeftArrow)) {
+        if (Input.GetKey(KeyCode.LeftArrow)) {
 
-            if (horizontalImmidiateMovement) {
-
-                if (downwardWaitTimer < downwardWaitMax) {
-                    downwardWaitTimer += Time.deltaTime;
-                    return;
-
-                }
-
-                if (horizontalTimer < constantHorizontalSpeed) {
-
-                    horizontalTimer += Time.deltaTime;
-                    return; // Exits method
-                }
-            }
-            if (!horizontalImmidiateMovement) {
-
-                horizontalImmidiateMovement = true;
-
-            }
-           
-            horizontalTimer = 0;
-
-            transform.position += Vector3.left;
-            if (isValidPosition()) {
-
-                FindObjectOfType<Game>().updateGrid(this);
-                play_move_Audio();
-            }
-
-            else {
-                transform.position += Vector3.right;
-            }
+            moveLeft();
         }
+         if (Input.GetKeyDown(KeyCode.UpArrow)) {
 
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-           
-
-
-            if (allowRotation) {
-
-                if (limitRotation) {
-
-                    if (transform.rotation.eulerAngles.z >= 90) {
-
-                        transform.Rotate(0, 0, -90);
-                    }
-                    else {
-
-                        transform.Rotate(0, 0, 90);
-                    }
-                }
-                else {
-
-                    transform.Rotate(0, 0, 90);
-                }
-            }
-
-            if (isValidPosition()) {
-
-                FindObjectOfType<Game>().updateGrid(this);
-                if (allowRotation) {
-
-                    play_rotate_Audio();
-                }
-                
-            }
-            else {
-                if (limitRotation) {
-
-                    if (transform.rotation.eulerAngles.z >= 90) {
-
-                        transform.Rotate(0, 0, -90);
-                    }
-                    else {
-
-                        transform.Rotate(0, 0, 90);
-                    }
-                }
-                else {
-                    transform.Rotate(0, 0, -90);
-                }
-
-            }
+            moveUp();
         }
-        else if (Input.GetKey(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
+         if (Input.GetKey(KeyCode.DownArrow) || (Time.time - fall >= fallSpeed)) {
 
-
-            if (verticalImmidiateMovement) {
-
-                if (downwardWaitTimer < downwardWaitMax) {
-
-                    downwardWaitTimer += Time.deltaTime;
-                    return;
-                }
-                if (verticalTimer < constantVerticalSpeed) {
-
-                    verticalTimer += Time.deltaTime;
-                    return;
-                }
-            }
-            if (!verticalImmidiateMovement) {
-                verticalImmidiateMovement = true;
-            }
-           
-            verticalTimer = 0;
-            transform.position += Vector3.down;
-            if (isValidPosition()) {
-
-                if (Input.GetKey(KeyCode.DownArrow)) {
-
-                    play_move_Audio();
-                }
-                FindObjectOfType<Game>().updateGrid(this);
-
-            } else {
-
-                transform.position += Vector3.up;
-                FindObjectOfType<Game>().deleteRow();
-                if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
-
-                    FindObjectOfType<Game>().gameOver();
-                }
-                Game.currentScore += indivisualScore;
-                enabled = false;
-                FindObjectOfType<Game>().spawnNextTetrimino();
-                play_land_Audio();
-            }
-            fall = Time.time;
-
+            moveDown();
         }
     }
 
@@ -278,6 +121,168 @@ public class Tetrimino : MonoBehaviour {
 
 
 
+
+
+    void moveRight() {
+        if (horizontalImmidiateMovement) {
+
+            if (downwardWaitTimerHorizontal < downwardWaitMax) {
+
+                downwardWaitTimerHorizontal += Time.deltaTime;
+                return;
+            }
+            if (horizontalTimer < constantHorizontalSpeed) {
+
+                horizontalTimer += Time.deltaTime;
+                return; // Exits method
+            }
+        }
+        if (!horizontalImmidiateMovement) {
+
+            horizontalImmidiateMovement = true;
+        }
+        horizontalTimer = 0;
+        // Moves tetrimino to the right
+        transform.position += Vector3.right;
+        // Confirms the tetrimino is not out of bounds or on another tetrimino.
+        if (isValidPosition()) {
+        
+            // Fills the grid in the correct mino location. Also plays a sound.
+            FindObjectOfType<Game>().updateGrid(this);
+            play_move_Audio();
+        }
+        else{
+
+            transform.position += Vector3.left;
+        }
+    }
+
+    void moveLeft() {
+        if (horizontalImmidiateMovement) {
+
+            if (downwardWaitTimerHorizontal < downwardWaitMax) {
+
+                downwardWaitTimerHorizontal += Time.deltaTime;
+                return;
+            }
+            if (horizontalTimer < constantHorizontalSpeed) {
+
+                horizontalTimer += Time.deltaTime;
+                return; // Exits method
+            }
+        }
+        if (!horizontalImmidiateMovement) {
+
+            horizontalImmidiateMovement = true;
+        }
+
+        horizontalTimer = 0;
+        transform.position += Vector3.left;
+        if (isValidPosition()) {
+
+            FindObjectOfType<Game>().updateGrid(this);
+            play_move_Audio();
+        }
+        else {
+            transform.position += Vector3.right;
+        }
+    }
+
+    void moveUp() {
+
+        if (allowRotation) {
+
+            if (limitRotation) {
+
+                if (transform.rotation.eulerAngles.z >= 90) {
+
+                    transform.Rotate(0, 0, -90);
+                }
+                else {
+
+                    transform.Rotate(0, 0, 90);
+                }
+            }
+            else {
+
+                transform.Rotate(0, 0, 90);
+            }
+        }
+
+        if (isValidPosition()) {
+
+            FindObjectOfType<Game>().updateGrid(this);
+            if (allowRotation) {
+
+                play_rotate_Audio();
+            }
+
+        }
+        else {
+            if (limitRotation) {
+
+                if (transform.rotation.eulerAngles.z >= 90) {
+
+                    transform.Rotate(0, 0, -90);
+                }
+                else {
+
+                    transform.Rotate(0, 0, 90);
+                }
+            }
+            else {
+                transform.Rotate(0, 0, -90);
+            }
+
+        }
+    }
+
+    void moveDown() {
+
+        if (verticalImmidiateMovement) {
+
+            if (downwardWaitTimerVertical < downwardWaitMax) {
+
+                downwardWaitTimerVertical+= Time.deltaTime;
+                return;
+            }
+            if (verticalTimer < constantVerticalSpeed) {
+
+                verticalTimer += Time.deltaTime;
+                return;
+            }
+        }
+        if (!verticalImmidiateMovement) {
+
+            verticalImmidiateMovement = true;
+        }
+
+        verticalTimer = 0;
+        transform.position += Vector3.down;
+        if (isValidPosition()) {
+
+            if (Input.GetKey(KeyCode.DownArrow)) {
+
+                play_move_Audio();
+            }
+            FindObjectOfType<Game>().updateGrid(this);
+
+        }
+        else {
+
+            transform.position += Vector3.up;
+            FindObjectOfType<Game>().deleteRow();
+            if (FindObjectOfType<Game>().checkIsAboveGrid(this)) {
+
+                FindObjectOfType<Game>().gameOver();
+            }
+            Game.currentScore += indivisualScore;
+            enabled = false;
+            FindObjectOfType<Game>().spawnNextTetrimino();
+            play_land_Audio();
+        }
+        fall = Time.time;
+    }
     //                                                                   S o u n d    P o r t i o n.
 
     void play_move_Audio() {
