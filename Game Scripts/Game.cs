@@ -10,10 +10,12 @@ public class Game : MonoBehaviour
     public static int gridHeight = 20;
     public static Transform[,] grid = new Transform[gridWidth, gridHeight];
     public int[] scores = new int[] { 40, 100, 300, 1200};
-    public Text huddyHUD;
     public int currentPoppedRows = 0;
     public static int currentScore = 0;
     public float fallSpeed = 1.0f;
+
+    public int currentLevel = 0;
+    private int num_Of_Lines_Cleared = 0;
 
     private AudioSource audioSource; // Gives us the ability to play sounds from this script.
     public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
@@ -24,6 +26,10 @@ public class Game : MonoBehaviour
 
     private bool gameStarted = false; // Determines whether the game has started or not.
     private Vector2 previewPosition = new Vector2(-5.5f, 15.0f); // The spawn location of the nextTetrimino
+
+    public Text huddyHUD;
+    public Text hud_level;
+    public Text hud_lines;
     void Start() {
         audioSource = GetComponent<AudioSource>();
         spawnNextTetrimino();
@@ -31,16 +37,17 @@ public class Game : MonoBehaviour
     
     void Update() {
         updateScore();
-
         updateUI();
+        updateLevel();
+        updateSpeed();
     }
     public void updateScore() {
         
         if (currentPoppedRows > 0) {
-
-            currentScore += scores[currentPoppedRows - 1];
-            play_LineCleared_Audio();
             
+            currentScore += scores[currentPoppedRows - 1] + (currentLevel+20);
+            num_Of_Lines_Cleared += currentPoppedRows;
+            play_LineCleared_Audio();
         }
         currentPoppedRows = 0;
 
@@ -51,6 +58,8 @@ public class Game : MonoBehaviour
     /// </summary>
     public void updateUI() {
         huddyHUD.text = currentScore.ToString();
+        hud_level.text = currentLevel.ToString();
+        hud_lines.text = num_Of_Lines_Cleared.ToString();
     }
 
 
@@ -315,5 +324,20 @@ public class Game : MonoBehaviour
     //                                                             S o u n d     P o r t i o n.
     void play_LineCleared_Audio() {
         audioSource.PlayOneShot(clearLineSound); //// Plays the clear line sound audio clip.
+    }
+
+
+
+
+
+    //                                                              D i f f i c u l t y    P o r t i o n.
+
+    void updateLevel() {
+
+        currentLevel = num_Of_Lines_Cleared / 10;
+    }
+    void updateSpeed() {
+
+        fallSpeed = 1.0f - ((float) currentLevel * .1f);
     }
 }

@@ -294,6 +294,9 @@ public class Tetrimino : MonoBehaviour {
     void play_rotate_Audio() {
         audioSource.PlayOneShot(rotateSound); // Plays the rotate sound audio clip.
     }
+
+
+    
 }
 
 
