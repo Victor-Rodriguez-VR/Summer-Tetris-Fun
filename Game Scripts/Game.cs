@@ -14,8 +14,8 @@ public class Game : MonoBehaviour
     public static int currentScore = 0;
     public float fallSpeed = 1.0f;
 
-    public int currentLevel = 0;
-    private int num_Of_Lines_Cleared = 0;
+    public int currentLevel = 0;    // The 'current level' of difficulty.
+    private int num_Of_Lines_Cleared = 0;   // The number of lines cleared over the duration of the whole game.
 
     private AudioSource audioSource; // Gives us the ability to play sounds from this script.
     public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
@@ -27,15 +27,16 @@ public class Game : MonoBehaviour
     private bool gameStarted = false; // Determines whether the game has started or not.
     private Vector2 previewPosition = new Vector2(-5.5f, 15.0f); // The spawn location of the nextTetrimino
 
-    public Text huddyHUD;
-    public Text hud_level;
-    public Text hud_lines;
+    public Text huddyHUD;   // Total score variable ( variable name pending ) 
+    public Text hud_level;  // Current level variable.
+    public Text hud_lines;  // # of lines cleared variable.
     void Start() {
         audioSource = GetComponent<AudioSource>();
         spawnNextTetrimino();
     }
     
     void Update() {
+
         updateScore();
         updateUI();
         updateLevel();
@@ -330,14 +331,15 @@ public class Game : MonoBehaviour
 
 
 
-    //                                                              D i f f i c u l t y    P o r t i o n.
+    //                                                               D i f f i c u l t y    P o r t i o n.
+
 
     void updateLevel() {
-
+        // Changes the current level if the total number of lines cleared is greater than 10.
         currentLevel = num_Of_Lines_Cleared / 10;
     }
     void updateSpeed() {
-
+        // Reduces the fall speed .1f based on the current level.
         fallSpeed = 1.0f - ((float) currentLevel * .1f);
     }
 }
