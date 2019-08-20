@@ -7,6 +7,7 @@ public class MenSYS : MonoBehaviour {
 
     public void playAgain() {
         // Changes the screen of to the game level that holds the grid.
-        SceneManager.LoadScene("level");
+        SceneManager.LoadScene("GameMenu");
+        Game.currentScore = 0;
     }
 }

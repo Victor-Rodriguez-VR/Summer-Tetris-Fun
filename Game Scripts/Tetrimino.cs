@@ -44,14 +44,15 @@ public class Tetrimino : MonoBehaviour {
         // Creates the ability to play music whenever I'd like to.
         audioSource = GetComponent<AudioSource>();
 
-        fallSpeed = GameObject.Find("GameScript").GetComponent<Game>().fallSpeed;
+
     }
 
     // Update is called once per frame.
     void Update() {
 
         checkUserInput(); // Checks input (arrow keys) and modifies a tetrimino's position.
-        updateIndivisualScore(); // After the 
+        updateIndivisualScore();
+        updateFallSpeed();
     }
 
 
@@ -283,6 +284,12 @@ public class Tetrimino : MonoBehaviour {
         }
         fall = Time.time;
     }
+    void updateFallSpeed() {
+        fallSpeed = Game.fallSpeed;
+    }
+
+
+
     //                                                                   S o u n d    P o r t i o n.
 
     void play_move_Audio() {

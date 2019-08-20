@@ -12,25 +12,31 @@ public class Game : MonoBehaviour
     public int[] scores = new int[] { 40, 100, 300, 1200};
     public int currentPoppedRows = 0;
     public static int currentScore = 0;
-    public float fallSpeed = 1.0f;
+    public static float fallSpeed = 1.0f;
 
-    public int currentLevel = 0;    // The 'current level' of difficulty.
-    private int num_Of_Lines_Cleared = 0;   // The number of lines cleared over the duration of the whole game.
+    public  int currentLevel = 0;    // The 'current level' of difficulty.
+    private int num_Of_Lines_Cleared = 0;   // The total number of lines cleared.
 
-    private AudioSource audioSource; // Gives us the ability to play sounds from this script.
-    public AudioClip clearLineSound; // Public varaible that we store our clear line sound audio clip.
+    private AudioSource audioSource; 
+    public AudioClip clearLineSound;
+
+    public static bool zeroStart;
+    public static int startingLevel;
+
+    private GameObject previewTetrimino; // The next tetrimino controlled by the player.
+    private GameObject nextTetrimino;   // The tetrimino the player controlls.
+
+    private bool gameStarted = false; // 
+    private Vector2 previewPosition = new Vector2(-5.5f, 15.0f); // The position of the preview tetrimino.
+
+    public Text huddyHUD;   
+    public Text hud_level;  
+    public Text hud_lines;  
 
 
-    private GameObject previewTetrimino; // Is the upcoming tetrimino block once the player lands the nextTetrimino object (which is the tetrimino they control)
-    private GameObject nextTetrimino;   // The tetrimino the user controlls.
 
-    private bool gameStarted = false; // Determines whether the game has started or not.
-    private Vector2 previewPosition = new Vector2(-5.5f, 15.0f); // The spawn location of the nextTetrimino
-
-    public Text huddyHUD;   // Total score variable ( variable name pending ) 
-    public Text hud_level;  // Current level variable.
-    public Text hud_lines;  // # of lines cleared variable.
     void Start() {
+        currentLevel = startingLevel;
         audioSource = GetComponent<AudioSource>();
         spawnNextTetrimino();
     }
@@ -336,7 +342,10 @@ public class Game : MonoBehaviour
 
     void updateLevel() {
         // Changes the current level if the total number of lines cleared is greater than 10.
-        currentLevel = num_Of_Lines_Cleared / 10;
+        if (zeroStart == true || (zeroStart == false && num_Of_Lines_Cleared / 10 > startingLevel)) {
+            currentLevel = num_Of_Lines_Cleared / 10;
+        }
+        
     }
     void updateSpeed() {
         // Reduces the fall speed .1f based on the current level.
