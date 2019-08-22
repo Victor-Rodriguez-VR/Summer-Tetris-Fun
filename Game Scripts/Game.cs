@@ -10,7 +10,7 @@ public class Game : MonoBehaviour
     public static int gridHeight = 20;
     public static Transform[,] grid = new Transform[gridWidth, gridHeight];
     public int[] scores = new int[] { 40, 100, 300, 1200};
-    public int currentPoppedRows = 0;
+    public int currentPoppedRows = 0; // The number of completely filled rows for the user-controlled mino.
     public static int currentScore = 0;
     public static float fallSpeed = 1.0f;
 
@@ -20,8 +20,8 @@ public class Game : MonoBehaviour
     private AudioSource audioSource; 
     public AudioClip clearLineSound;
 
-    public static bool zeroStart;
-    public static int startingLevel;
+    public static bool zeroStart; // Determines if the game started at level 0.
+    public static int startingLevel; // The starting level of difficulty.
 
     private GameObject previewTetrimino; // The next tetrimino controlled by the player.
     private GameObject nextTetrimino;   // The tetrimino the player controlls.
@@ -328,7 +328,7 @@ public class Game : MonoBehaviour
         return randomTetriminoName;
     }
 
-    //                                                             S o u n d     P o r t i o n.
+    //                                                                    S o u n d     P o r t i o n.
     void play_LineCleared_Audio() {
         audioSource.PlayOneShot(clearLineSound); //// Plays the clear line sound audio clip.
     }
