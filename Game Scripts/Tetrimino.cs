@@ -285,6 +285,7 @@ public class Tetrimino : MonoBehaviour {
         fall = Time.time;
     }
     void updateFallSpeed() {
+        // Copies the slider fall speed to the fall speed variable.
         fallSpeed = Game.fallSpeed;
     }
 
