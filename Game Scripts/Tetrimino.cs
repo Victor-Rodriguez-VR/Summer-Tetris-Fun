@@ -23,8 +23,8 @@ public class Tetrimino : MonoBehaviour {
     private float downwardWaitTimerHorizontal= 0;
     private float downwardWaitTimerVertical = 0;
 
-    private bool horizontalImmidiateMovement = false; // 
-    private bool verticalImmidiateMovement = false;
+    private bool horizontalImmidiateMovement = false; // Determines if a key was being held horizontally.
+    private bool verticalImmidiateMovement = false; // Determines if a key was being held vertically.
 
 
 
