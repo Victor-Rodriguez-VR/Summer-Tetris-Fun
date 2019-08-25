@@ -6,7 +6,7 @@ public class Tetrimino : MonoBehaviour {
 
     float fall = 0; // Timer for fallSpeed
 
-    private float fallSpeed;
+    private float fallSpeed; // The number of seconds needed for a tetrmino to go down by one unit on the y axis.
     public bool allowRotation = true; // Public bool to let us determine whether our prefabs allow roation.
     public bool limitRotation = false; // Public bool to let us determine if our prefabs are limited in rotation.
 
@@ -98,11 +98,14 @@ public class Tetrimino : MonoBehaviour {
     bool isValidPosition() {
         // Confirms the tetrimino is not on another mino or out of bounds.
         foreach (Transform mino in transform) {
+
             Vector2 pos = FindObjectOfType<Game>().Round(mino.position);
             if (FindObjectOfType<Game>().inGrid(pos) == false)  {
+
                 return false;
             }
             if (FindObjectOfType<Game>().GetTransformAtGridPosition(pos) != null && FindObjectOfType<Game>().GetTransformAtGridPosition(pos).parent != transform) {
+
                 return false;
             }
         }
@@ -112,9 +115,11 @@ public class Tetrimino : MonoBehaviour {
     void updateIndivisualScore() {
 
         if (indivisualScoreTime < 1) {
+
             indivisualScoreTime += Time.deltaTime;
         }
         else {
+
             indivisualScoreTime = 0;
             indivisualScore = Mathf.Max(indivisualScore - 10, 0);
         }
@@ -176,7 +181,6 @@ public class Tetrimino : MonoBehaviour {
 
             horizontalImmidiateMovement = true;
         }
-
         horizontalTimer = 0;
         transform.position += Vector3.left;
         if (isValidPosition()) {
@@ -294,12 +298,15 @@ public class Tetrimino : MonoBehaviour {
     //                                                                   S o u n d    P o r t i o n.
 
     void play_move_Audio() {
+
         audioSource.PlayOneShot(moveSound); // Plays the move sound audio clip.
     }
     void play_land_Audio() {
+
         audioSource.PlayOneShot(landSound); // Plays the land sound audio clip.
     }
     void play_rotate_Audio() {
+
         audioSource.PlayOneShot(rotateSound); // Plays the rotate sound audio clip.
     }
 
